@@ -54,18 +54,24 @@ spec:
     spec:
       serviceAccountName: wipp-backend-sa
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
+        runAsUser: RUN_AS_USER_VALUE
+        runAsGroup: RUN_AS_GROUP_VALUE
       containers:
       - image: WIPP_BACKEND_IMAGE
         name: wipp-backend
         args: ["mongodb", "27017", "wippdata-pvc"]
         env:
-            - name: KEYCLOAK_AUTH_URL
+            - name: SPRING_DATA_MONGODB_HOST
+              value: mongodb
+            - name: SPRING_DATA_MONGODB_PORT
+              value: 27017
+            - name: KUBE_WIPPDATA_PVC
+              value: wippdata-pvc
+            - name: KEYCLOAK_AUTHSERVERURL
               value: KEYCLOAK_AUTH_URL_VALUE
-            - name: KEYCLOAK_SSL_REQUIRED
+            - name: KEYCLOAK_SSLREQUIRED
               value: KEYCLOAK_SSL_REQUIRED_VALUE
-            - name: KEYCLOAK_DISABLE_TRUST_MANAGER
+            - name: KEYCLOAK_DISABLETRUSTMANAGER
               value: KEYCLOAK_DISABLE_TRUST_MANAGER_VALUE
             - name: OME_CONVERTER_THREADS
               value: OME_CONVERTER_THREADS_VALUE
@@ -75,11 +81,13 @@ spec:
               value: wipp-backend-prod
             - name: ELASTIC_APM_APPLICATION_PACKAGES
               value: gov.nist.itl.ssd.wipp.backend
+            - name: RUN_WORKFLOWS_AS_USER
+              value: RUN_AS_USER_VALUE
+            - name: RUN_WORKFLOWS_AS_GROUP
+              value: RUN_AS_GROUP_VALUE
         volumeMounts:
         - mountPath: /data/WIPP-plugins
           name: data
-        - mountPath: /opt/wipp/config/application.properties
-          name: conf
         ports:
         - containerPort: 8080
         resources: {}
@@ -87,9 +95,5 @@ spec:
       - name: data
         persistentVolumeClaim:
           claimName: wippdata-pvc
-      - name: conf
-        hostPath:
-          path: /opt/WIPP-plugins-conf/application.properties
-          type: File
       restartPolicy: Always
 status: {}
