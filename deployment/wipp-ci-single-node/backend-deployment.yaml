@@ -59,12 +59,11 @@ spec:
       containers:
       - image: WIPP_BACKEND_IMAGE
         name: wipp-backend
-        args: ["mongodb", "27017", "wippdata-pvc"]
         env:
             - name: SPRING_DATA_MONGODB_HOST
               value: mongodb
             - name: SPRING_DATA_MONGODB_PORT
-              value: 27017
+              value: "27017"
             - name: KUBE_WIPPDATA_PVC
               value: wippdata-pvc
             - name: KEYCLOAK_AUTHSERVERURL
@@ -82,9 +81,9 @@ spec:
             - name: ELASTIC_APM_APPLICATION_PACKAGES
               value: gov.nist.itl.ssd.wipp.backend
             - name: RUN_WORKFLOWS_AS_USER
-              value: RUN_AS_USER_VALUE
+              value: "RUN_AS_USER_VALUE"
             - name: RUN_WORKFLOWS_AS_GROUP
-              value: RUN_AS_GROUP_VALUE
+              value: "RUN_AS_GROUP_VALUE"
         volumeMounts:
         - mountPath: /data/WIPP-plugins
           name: data
